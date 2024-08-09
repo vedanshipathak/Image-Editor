@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import colorchooser
 from PIL import Image,ImageOps,ImageTk,ImageFilter
+from tkinter import ttk
+
 
 #root will the main screen 
 root=tk.Tk()
@@ -67,11 +69,89 @@ def change_color():
   pen_color=colorchooser.askcolor(title="Select pen color")[1]
   
 
+
+
 #changing color of the pen
 #we create a button
 color_button=tk.Button(left_frame,text="Change pen color",command=change_color,bg="white")
-color_button.pack(pady=5)
+color_button.pack(pady=5,padx=15)
+
+#changing the pen size:current-5 is med 
+#to do this we will create another frame inside left_frame and inside that we will add 3 radio buttons for size option
+pen_size_frame=tk.Frame(left_frame,bg="white")
+pen_size_frame.pack(pady=5)
+
+#change_size function 
+def change_size(size):
+  global pen_size
+  pen_size=size
 
 
+#radio button
+pen_size_1=tk.Radiobutton(pen_size_frame,text="Small",value=3,command=lambda:change_size(3),bg="white")#size of pen will be 3 small
+#COMMAND CALLS THE CHANGE_SIZE FUNCTION
+
+#LAMDA - is necessary if you want to pass arguments to the function
+
+pen_size_1.pack(side="left")
+
+pen_size_2=tk.Radiobutton(pen_size_frame,text="Medium",value=5,command=lambda:change_size(5),bg="white")#size of pen will be 5 medium
+pen_size_2.pack(side="left")
+
+pen_size_2.select()# if we dont write this we see both med and large are selected IT WILL SPECIFY THE PARTICULAR BTN THAT IS SELECTED AS DEFAULT
+
+pen_size_3=tk.Radiobutton(pen_size_frame,text="Large",value=7,command=lambda:change_size(7),bg="white")#size of pen will be 7 large
+pen_size_3.pack(side="left")
+
+# to clear the drawing you created
+def clear_canvas():
+  canvas.delete("all")#but it will also delete the image you were drawing upon 
+  #so to keep the image
+  canvas.create_image(0,0,image=canvas.image,anchor="nw")
+
+
+#create a button
+clear_button=tk.Button(left_frame,text="Clear",command=clear_canvas,bg="#FF9797")
+clear_button.pack(pady=10)
+
+
+#adding filters to the image 
+#to do this we will use the PILLOW library 
+
+# add a drop down menu to show all edits
+filter_label=tk.Label(left_frame,text="Select Filter",bg="white")
+filter_label.pack()
+
+#create combo box that will have options
+#ttk=theme tkinter
+filter_combobox=ttk.Combobox(left_frame,values=["Black and White","Blur","Emboss","Sharpen","Smooth"])
+filter_combobox.pack()
+
+#function
+def apply_filter(filter):
+  #here we neef to reopen the image
+  image=Image.open(file_path)
+  width, height = int(image.width / 2),int(image.height/2)
+  image = image.resize((width,height),Image.Resampling.LANCZOS)
+  if filter== "Black and White":
+    image=ImageOps.grayscale(image)
+  elif filter =="Blur":
+    image = image.filter(ImageFilter.BLUR)
+  elif filter == "Sharpen":
+        image = image.filter(ImageFilter.SHARPEN)
+  elif filter == "Smooth":
+        image = image.filter(ImageFilter.SMOOTH)
+  elif filter == "Emboss":
+        image = image.filter(ImageFilter.EMBOSS) 
+  image = ImageTk.PhotoImage(image)
+  canvas.image = image
+  canvas.create_image(0, 0, image=image, anchor="nw") 
+
+
+#to select a particular filter from the comboox we use
+#<<ComboboxSelected>>
+filter_combobox.bind("<<ComboboxSelected>>",lambda event:apply_filter(filter_combobox.get()))
+#apply_filter is func
+#filter_combobox.get()-will give whatever you select from the combobox
 
 root.mainloop()#mainloop is an infinite loop that will run until you terminate it
