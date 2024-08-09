@@ -3,18 +3,26 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import colorchooser
 from PIL import Image,ImageOps,ImageTk,ImageFilter
+
 #root will the main screen 
 root=tk.Tk()
+
 #give dimensions to the screen you want
 #use .geometry for that 
 root.geometry("1000x600")#length and breadth of main screen
 root.title("Image Editor")#give title to the project
 root.config(bg="white")#give background color grey or whatever you want
 
+
+pen_color = "black"
+pen_size = 5
+file_path = ""
+
 #to create the side pannel we will use Frame: frame is used for child parts
 left_frame=tk.Frame(root,width=200,height=600,bg="white")
 #tk.Frame(root,...) root tells about parent window inside that we create a child frame
 left_frame.pack(side="left",fill="y")#want on left size and take up entire space in y direction
+
 
 #function of add_img
 def add_image():
@@ -32,14 +40,38 @@ def add_image():
   canvas.create_image(0,0,image=image,anchor="nw")#0,0 coordinates or origin of canvas nw means right in center
 
 
+
 #add button 
 image_button=tk.Button(left_frame,text="Add Image",bg="white",command=add_image)#command will call the add_img function 
 image_button.pack(pady=15)#add padding in y or spaces
+
 
 #create canvas where images get imported
 canvas=tk.Canvas(root,width=750,height=600)
 canvas.pack()
 #to start drawing on the canvas
+
+#DRAW FUNC
+def draw(event):
+  x1,y1=(event.x-pen_size),(event.y-pen_size)
+  x2,y2=(event.x+pen_size),(event.y+pen_size)
+  canvas.create_oval(x1,y1,x2,y2,fill=pen_color,outline='')
+
+#draw on top of the image
+canvas.bind("<B1-Motion>",draw)#draw is the func
+#when you click and drag you call the func draw
+
+#function for change_color
+def change_color():
+  global pen_color
+  pen_color=colorchooser.askcolor(title="Select pen color")[1]
+  
+
+#changing color of the pen
+#we create a button
+color_button=tk.Button(left_frame,text="Change pen color",command=change_color,bg="white")
+color_button.pack(pady=5)
+
 
 
 root.mainloop()#mainloop is an infinite loop that will run until you terminate it
