@@ -11,3 +11,8 @@ This Tkinter-based Image Editor is a simple graphical user interface (GUI) appli
 5) Saving/Download the image in form of png
 
 ## Screenshots
+![im1](https://github.com/user-attachments/assets/32ae7b38-61ae-492c-b51a-86782612eea6)
+![im2](https://github.com/user-attachments/assets/d402603f-a1da-469c-8d2d-058de94118d0)
+![m3](https://github.com/user-attachments/assets/f3b669c2-b82f-499a-8c8b-eaa458bc3eee)
+
+
