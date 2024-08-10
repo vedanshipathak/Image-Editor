@@ -29,7 +29,7 @@ left_frame.pack(side="left",fill="y")#want on left size and take up entire space
 #function of add_img
 def add_image():
   global file_path #so that we can modify it throughout the program
-  file_path=filedialog.askopenfilename(initialdir="D:/codefirst.io/Tkinter Image Editor/Pictures")#initialdir will determine the path that will open when you fetch the imgs
+  file_path=filedialog.askopenfilename(initialdir="C:/Users/vedanshi-Personal/Desktop")#initialdir will determine the path that will open when you fetch the imgs
   image=Image.open(file_path)#selecting an img from file
   #before changing it and putting to canvas we first resize it
   width,height=int(image.width/2),int(image.height/2)
@@ -153,5 +153,25 @@ def apply_filter(filter):
 filter_combobox.bind("<<ComboboxSelected>>",lambda event:apply_filter(filter_combobox.get()))
 #apply_filter is func
 #filter_combobox.get()-will give whatever you select from the combobox
+
+#save image function
+def save_image():
+   #user select a location and filename
+   file_path=filedialog.asksaveasfilename(defaultextension=".png",filetypes=[("PNG files","*.png")])
+   if file_path:
+      #save current canvas content as img 
+      #create an image object from canvas 
+      canvas.postscript(file="temp.ps",colormode='color')#saves canvas as postscript file
+      #convert postscript to png
+      #use PIL for this-pillow
+      img=Image.open("temp.ps")
+      img.save(file_path,"PNG")
+      #remove the temporary postscript file
+      import os
+      os.remove("temp.ps")
+
+#creating a save option button for the image
+save_image_button=tk.Button(left_frame,text="Save Image",bg="white",command=save_image)
+save_image_button.pack(pady=10)
 
 root.mainloop()#mainloop is an infinite loop that will run until you terminate it
